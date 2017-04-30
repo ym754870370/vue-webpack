@@ -1,0 +1,30 @@
+{
+  "name": "vue-webpack",
+  "version": "1.0.0",
+  "main": "bundle.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ym754870370/vue-webpack.git"
+  },
+  "keywords": [
+    "webpack"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ym754870370/vue-webpack/issues"
+  },
+  "homepage": "https://github.com/ym754870370/vue-webpack#readme",
+  "description": "",
+  "devDependencies": {
+    "css-loader": "^0.28.0",
+    "style-loader": "^0.16.1",
+    "vue": "^2.3.0",
+    "vue-template": "^1.0.3",
+    "webpack": "^2.4.1",
+    "webpack-dev-server": "^2.4.5"
+  }
+}
