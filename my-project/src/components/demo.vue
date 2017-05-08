@@ -36,18 +36,21 @@
         <el-button type="primary" @click="onSubmit">查询</el-button>
       </el-form-item>
     </el-form>
-    <list :listData="dateOptions"></list>
+    <!-- <list></list> -->
+    <catchList></catchList>
   </div>
 </template>
 
  
 <script>
   import list from './list'
+  import catchList from './catchList'
   import format from '../format.js'
   export default {
     name: 'demo',
     components: {
-      list: list
+      list: list,
+      catchList: catchList
     },
     data () {
       return {
@@ -58,79 +61,102 @@
           name: '',
           info: '',
           date: ''
-        },
-        listData: [{
-          date: '2017-05-01',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2017-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1517 弄'
-        }, {
-          date: '2017-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1519 弄'
-        }, {
-          date: '2017-05-04',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1516 弄'
-        }, {
-          date: '2017-05-05',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1516 弄'
-        }, {
-          date: '2017-05-06',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1516 弄'
-        }, {
-          date: '2017-05-07',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1516 弄'
-        }, {
-          date: '2017-05-07',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1516 弄'
-        }, {
-          date: '2017-05-09',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1516 弄'
-        }, {
-          date: '2017-05-10',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1516 弄'
-        }, {
-          date: '2017-05-11',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1516 弄'
-        }, {
-          date: '2017-05-12',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1516 弄'
-        }, {
-          date: '2017-05-13',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1516 弄'
-        }, {
-          date: '2017-05-14',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1516 弄'
-        }, {
-          date: '2017-05-15',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1516 弄'
-        }],
-        dateOptions: []
+        }
+        // listData: [],
+        // listData: [{
+        //   date: '2017-05-01',
+        //   name: '王小虎',
+        //   address: '上海市普陀区金沙江路 1518 弄'
+        // }, {
+        //   date: '2017-05-02',
+        //   name: '王小虎',
+        //   address: '上海市普陀区金沙江路 1517 弄'
+        // }, {
+        //   date: '2017-05-03',
+        //   name: '王小虎',
+        //   address: '上海市普陀区金沙江路 1519 弄'
+        // }, {
+        //   date: '2017-05-04',
+        //   name: '王小虎',
+        //   address: '上海市普陀区金沙江路 1516 弄'
+        // }, {
+        //   date: '2017-05-05',
+        //   name: '王小虎',
+        //   address: '上海市普陀区金沙江路 1516 弄'
+        // }, {
+        //   date: '2017-05-06',
+        //   name: '王小虎',
+        //   address: '上海市普陀区金沙江路 1516 弄'
+        // }, {
+        //   date: '2017-05-07',
+        //   name: '王小虎',
+        //   address: '上海市普陀区金沙江路 1516 弄'
+        // }, {
+        //   date: '2017-05-07',
+        //   name: '王小虎',
+        //   address: '上海市普陀区金沙江路 1516 弄'
+        // }, {
+        //   date: '2017-05-09',
+        //   name: '王小虎',
+        //   address: '上海市普陀区金沙江路 1516 弄'
+        // }, {
+        //   date: '2017-05-10',
+        //   name: '王小虎',
+        //   address: '上海市普陀区金沙江路 1516 弄'
+        // }, {
+        //   date: '2017-05-11',
+        //   name: '王小虎',
+        //   address: '上海市普陀区金沙江路 1516 弄'
+        // }, {
+        //   date: '2017-05-12',
+        //   name: '王小虎',
+        //   address: '上海市普陀区金沙江路 1516 弄'
+        // }, {
+        //   date: '2017-05-13',
+        //   name: '王小虎',
+        //   address: '上海市普陀区金沙江路 1516 弄'
+        // }, {
+        //   date: '2017-05-14',
+        //   name: '王小虎',
+        //   address: '上海市普陀区金沙江路 1516 弄'
+        // }, {
+        //   date: '2017-05-15',
+        //   name: '王小虎',
+        //   address: '上海市普陀区金沙江路 1516 弄'
+        // }],
+        // dateOptions: []
       }
     },
+    // beforeCreate () {
+    //   var _this = this
+    //   this.$http.get('http://house-be-manage.focus-test.cn/project/listProject?params=%7B%22page%22:0,%22count%22:10%7D', {
+    //     headers: {
+    //       'X-Requested-With': 'XMLHttpRequest'
+    //     },
+    //     // credentials: 'include',
+    //     withCredentials: true
+    //   })
+    //     .then(function (response) {
+    //       // console.log(response)
+    //       // console.log(response.data)
+    //       // console.log(response.data.data.content)
+    //       _this.listData = response.data.data.content
+    //     })
+    //     .catch(function (error) {
+    //       console.log(error)
+    //     })
+    // },
     beforeMount () {
       var _this = this
-      _this.dateOptions = _this.listData
+      setTimeout(function () {
+        _this.dateOptions = _this.listData
+      }, 3000)
     },
     methods: {
       onSubmit () {
         var arr = []
         var _this = this
+        console.log(_this.listData)
         if (_this.formInline.date[0]) {
           var minDate = format.smallDateFormat(new Date(Date.parse(_this.formInline.date[0]))).toString()
         }
@@ -159,8 +185,7 @@
         }
       }
     },
-    watch () {
-      console.log(this.formInline.region)
+    watch: {
     }
 }
 </script>

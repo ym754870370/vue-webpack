@@ -1,6 +1,7 @@
+var format = {}
+
 // 时间戳转换为正确格式的字符串
-exports.dateFormat = function (date, str) {
-  console.log('ye')
+format.dateFormat = function (date, str) {
   var o = {
     'M+': date.getMonth() + 1, // 月份
     'd+': date.getDate(), // 日
@@ -16,10 +17,42 @@ exports.dateFormat = function (date, str) {
   return str
 }
 
-exports.smallDateFormat = function (date) {
+format.smallDateFormat = function (date) {
   var month = date.getMonth() + 1
   var day = date.getDate()
   var year = date.getYear() + 1900
   var str = year + '-' + month + '-' + day
   return str
 }
+
+import axios from 'axios'
+
+// 请求数据
+format.getData = function (currentPage, listIndex) {
+  var url = 'http://house-be-manage.focus-test.cn/project/listProject?params=%7B%22page%22:' + currentPage + ',%22count%22:' + listIndex + '%7D'
+  let res = [1, 2, 3]
+  axios.get(url, {
+    headers: {
+      'X-Requested-With': 'XMLHttpRequest'
+    },
+    // credentials: 'include',
+    withCredentials: true
+  })
+    .then(function (response) {
+      console.log(response.data.data.content)
+      // _this.listData = response.data.data.content
+      // _this.listDataLength = response.data.data.totalNum - _this.listIndex
+      console.log('ressss' + res)
+      res = [response.data.data.content, response.data.data.totalNum]
+      console.log('write')
+      console.log(res) // then中更改了的res，但是存在异步导致拿到数据之前res已经被return
+    })
+    .catch(function (error) {
+      console.log(error)
+      res.error = error
+    })
+  console.log('waimian' + res)
+}
+
+export default format
+
