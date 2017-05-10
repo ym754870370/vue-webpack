@@ -82,22 +82,10 @@
     },
     beforeCreate () {
       var _this = this
-      var url = 'http://house-be-manage.focus-test.cn/project/listProject?params=%7B%22page%22:' + 0 + ',%22count%22:' + 10 + '%7D'
-      this.$http.get(url, {
-        headers: {
-          'X-Requested-With': 'XMLHttpRequest'
-        },
-        // credentials: 'include',
-        withCredentials: true
-      })
-        .then(function (response) {
-          console.log(response.data.data.content)
-          _this.listData = response.data.data.content
-          _this.listDataLength = response.data.data.totalNum - _this.listIndex
-        })
-        .catch(function (error) {
-          console.log(error)
-        })
+      format.getData(0, 10).then(function (res) {
+        _this.listData = res[0]
+        _this.listDataLength = res[1] - _this.listIndex
+      }, function (error) { console.log('出错了', error) })
     },
     beforeMount: function () {
       var _this = this
@@ -108,8 +96,6 @@
           arr.push(v)
         }
       })
-      console.log(_this.listData)
-      console.log(this.listIndex)
       _this.tableData = arr
     },
     methods: {
@@ -121,50 +107,20 @@
         var _this = this
         this.loading = true
         _this.listIndex = val
-        console.log(_this.listIndex)
-        // var url = 'http://house-be-manage.focus-test.cn/project/listProject?params=%7B%22page%22:' + this.currentPage + ',%22count%22:' + _this.listIndex + '%7D'
-        // this.$http.get(url, {
-        //   headers: {
-        //     'X-Requested-With': 'XMLHttpRequest'
-        //   },
-        //   // credentials: 'include',
-        //   withCredentials: true
-        // })
-        //   .then(function (response) {
-        //     console.log(response.data.data.content)
-        //     _this.listData = response.data.data.content
-        //     _this.listDataLength = response.data.data.totalNum - _this.listIndex
-        //   })
-        //   .catch(function (error) {
-        //     console.log(error)
-        debugger
-        var a = format.getData(_this.currentPage, _this.listIndex)
-        console.log('a')
-        console.log(a)
-        _this.listData = format.getData(_this.currentPage, _this.listIndex)[0]
-        _this.listDataLength = format.getData(_this.currentPage, _this.listIndex)[1] - _this.listIndex
+        format.getData(_this.currentPage, _this.listIndex).then(function (res) {
+          _this.listData = res[0]
+          _this.listDataLength = res[1] - _this.listIndex
+        }, function (error) { console.log('出错了', error) })
       },
       handleCurrentChange (val) {
+        console.log(`当前页: ${val}`)
         this.currentPage = val
         this.loading = true
-        console.log(`当前页: ${val}`)
         var _this = this
-        console.log(_this.currentPage)
-        var url = 'http://house-be-manage.focus-test.cn/project/listProject?params=%7B%22page%22:' + this.currentPage + ',%22count%22:' + _this.listIndex + '%7D'
-        this.$http.get(url, {
-          headers: {
-            'X-Requested-With': 'XMLHttpRequest'
-          },
-          // credentials: 'include',
-          withCredentials: true
-        })
-          .then(function (response) {
-            _this.listData = response.data.data.content
-            _this.listDataLength = response.data.data.totalNum - _this.listIndex
-          })
-          .catch(function (error) {
-            console.log(error)
-          })
+        format.getData(_this.currentPage, _this.listIndex).then(function (res) {
+          _this.listData = res[0]
+          _this.listDataLength = res[1] - _this.listIndex
+        }, function (error) { console.log('出错了', error) })
       }
     },
     watch: {

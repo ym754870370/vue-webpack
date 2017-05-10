@@ -36,6 +36,7 @@
         <el-button type="primary" @click="onSubmit">查询</el-button>
       </el-form-item>
     </el-form>
+    <demoForm></demoForm>
     <!-- <list></list> -->
     <catchList></catchList>
   </div>
@@ -46,11 +47,13 @@
   import list from './list'
   import catchList from './catchList'
   import format from '../format.js'
+  import demoForm from './demo-form'
   export default {
     name: 'demo',
     components: {
       list: list,
-      catchList: catchList
+      catchList: catchList,
+      demoForm: demoForm
     },
     data () {
       return {
