@@ -2,28 +2,25 @@
   <div class="demo">
     <el-form :inline="true" :model="formInline" class="demo-form-inline">
       <el-form-item label="省份">
-        <el-select v-model="formInline.parseInt" placeholder="请选择">
-          <el-option label="区域一" value="shanghai"></el-option>
-          <el-option label="区域二" value="beijing"></el-option>
+        <el-select v-model="formInline.provinceName" placeholder="请选择">
+          <el-option v-for="(item, index) in provinceList" :label="item.provinceShortName" :value="item.provinceName"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="城市">
-        <el-select v-model="formInline.city" placeholder="请选择">
-          <el-option label="区域一" value="shanghai"></el-option>
-          <el-option label="区域二" value="beijing"></el-option>
+        <el-select v-model="formInline.cityName" placeholder="请选择">
+          <el-option v-for="(item, index) in cityList" :label="item.cityShortName" :value="item.cityName"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="楼盘名称">
-        <el-input v-model="formInline.name" placeholder="情输入楼盘名称"></el-input>
+        <el-input v-model="formInline.projectName" placeholder="情输入楼盘名称"></el-input>
       </el-form-item>
       <el-form-item label="来源" >
-        <el-select v-model="formInline.info" placeholder="请选择">
-          <el-option label="区域一" value="shanghai"></el-option>
-          <el-option label="区域二" value="beijing"></el-option>
+        <el-select v-model="formInline.origin" placeholder="请选择">
+          <el-option v-for="(item, index) in originList" :label="item.value" :value="item.value"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="操作人">
-        <el-input v-model="formInline.user" placeholder="请输入操作人"></el-input>
+        <el-input v-model="formInline.operatorName" placeholder="请输入操作人"></el-input>
       </el-form-item>
       <el-form-item label="操作时间" required>
         <el-col :span="11">
@@ -36,9 +33,9 @@
         <el-button type="primary" @click="onSubmit">查询</el-button>
       </el-form-item>
     </el-form>
-    <demoForm></demoForm>
+    <!-- <demoForm></demoForm> -->
     <!-- <list></list> -->
-    <catchList></catchList>
+    <catchList :handleSizeChange="handleSizeChange" :handleCurrentChange="handleCurrentChange" :listDataProp="listDataProp" :dataProp="formInline" :originList="originList" :loadingProp="loading"></catchList>
   </div>
 </template>
 
@@ -58,13 +55,55 @@
     data () {
       return {
         formInline: {
-          user: '',
-          parseInt: '',
-          city: '',
-          name: '',
-          info: '',
-          date: ''
-        }
+          operatorName: '',
+          provinceName: '',
+          cityName: '',
+          projectName: '',
+          origin: '',
+          date: '',
+          module: '',
+          moduleName: ''
+        },
+        page: 0,
+        pageSize: 10,
+        listDataProp: [],
+        provinceList: [],
+        cityList: [],
+        loading: false,
+        originList: [
+          {
+            value: '全部',
+            module: 0
+          },
+          {
+            value: '楼盘管理',
+            module: 1
+          },
+          {
+            value: 'spider数据校对',
+            module: 2
+          },
+          {
+            value: '新建楼盘审核',
+            module: 3
+          },
+          {
+            value: '楼盘信息审核',
+            module: 4
+          },
+          {
+            value: 'spider楼盘更新监控',
+            module: 5
+          },
+          {
+            value: '楼盘点评审核',
+            module: 6
+          },
+          {
+            value: '点评审核记录',
+            module: 7
+          }
+        ]
         // listData: [],
         // listData: [{
         //   date: '2017-05-01',
@@ -130,25 +169,30 @@
         // dateOptions: []
       }
     },
-    // beforeCreate () {
-    //   var _this = this
-    //   this.$http.get('http://house-be-manage.focus-test.cn/project/listProject?params=%7B%22page%22:0,%22count%22:10%7D', {
-    //     headers: {
-    //       'X-Requested-With': 'XMLHttpRequest'
-    //     },
-    //     // credentials: 'include',
-    //     withCredentials: true
-    //   })
-    //     .then(function (response) {
-    //       // console.log(response)
-    //       // console.log(response.data)
-    //       // console.log(response.data.data.content)
-    //       _this.listData = response.data.data.content
-    //     })
-    //     .catch(function (error) {
-    //       console.log(error)
-    //     })
-    // },
+    beforeCreate () {
+      var _this = this
+      // this.$http.get('http://house-be-manage.focus-test.cn/project/listProject?params=%7B%22page%22:0,%22count%22:10%7D', {
+      //   headers: {
+      //     'X-Requested-With': 'XMLHttpRequest'
+      //   },
+      //   // credentials: 'include',
+      //   withCredentials: true
+      // })
+      //   .then(function (response) {
+      //     // console.log(response)
+      //     // console.log(response.data)
+      //     // console.log(response.data.data.content)
+      //     _this.listData = response.data.data.content
+      //   })
+      //   .catch(function (error) {
+      //     console.log(error)
+      //   })
+      format.getProvince().then(function (res) {
+        _this.provinceList = res.data.data
+      }, function (error) {
+        console.log(error)
+      })
+    },
     beforeMount () {
       var _this = this
       setTimeout(function () {
@@ -157,38 +201,71 @@
     },
     methods: {
       onSubmit () {
-        var arr = []
         var _this = this
-        console.log(_this.listData)
-        if (_this.formInline.date[0]) {
-          var minDate = format.smallDateFormat(new Date(Date.parse(_this.formInline.date[0]))).toString()
-        }
-        if (_this.formInline.date[1]) {
-          var maxDate = format.smallDateFormat(new Date(Date.parse(_this.formInline.date[1]))).toString()
-        }
-        console.log(minDate)
-        console.log(maxDate)
-        _this.listData.map(function (v, i) {
-          if (minDate && maxDate) {
-            if (Date.parse(minDate) <= Date.parse(v.date) && Date.parse(maxDate) >= Date.parse(v.date)) {
-              arr.push(v)
-              console.log('y')
-            }
-            // console.log('minDate:' + Date.parse(minDate))
-            // console.log(Date.parse(v.date))
-            // console.log('maxDate: ' + Date.parse(maxDate))
+        _this.loading = true
+        _this.originList.forEach(v => {
+          if (v.value === _this.formInline.origin) {
+            _this.formInline.module = v.module
           }
         })
-        if (arr.length !== 0) {
-          _this.dateOptions = arr
-        }
-        console.log(arr)
-        if (arr.length === 0) {
-          _this.dateOptions = _this.listData
-        }
+        format.getScreenList(_this.page, _this.pageSize, _this.formInline).then(function (res) {
+          console.log(res)
+          _this.listDataProp = res.data.data
+        }, function (error) {
+          console.log(error)
+        })
+
+        // 虚拟数据时间遍历筛选
+        // if (_this.formInline.date[0]) {
+        //   var minDate = format.smallDateFormat(new Date(Date.parse(_this.formInline.date[0]))).toString()
+        // }
+        // if (_this.formInline.date[1]) {
+        //   var maxDate = format.smallDateFormat(new Date(Date.parse(_this.formInline.date[1]))).toString()
+        // }
+        // console.log(minDate)
+        // console.log(maxDate)
+        // _this.listData.map(function (v, i) {
+        //   if (minDate && maxDate) {
+        //     if (Date.parse(minDate) <= Date.parse(v.date) && Date.parse(maxDate) >= Date.parse(v.date)) {
+        //       arr.push(v)
+        //       console.log('y')
+        //     }
+        //     // console.log('minDate:' + Date.parse(minDate))
+        //     // console.log(Date.parse(v.date))
+        //     // console.log('maxDate: ' + Date.parse(maxDate))
+        //   }
+        // })
+        // if (arr.length !== 0) {
+        //   _this.dateOptions = arr
+        // }
+        // console.log(arr)
+        // if (arr.length === 0) {
+        //   _this.dateOptions = _this.listData
+        // }
+      },
+      handleSizeChange: function (info) {
+        var _this = this
+        _this.page = info
+      },
+      handleCurrentChange: function (info) {
+        var _this = this
+        _this.pageSize = info
       }
     },
     watch: {
+      'formInline.provinceName': function () {
+        var _this = this
+        _this.provinceList.forEach(v => {
+          console.log(v.provinceShortName)
+          if (v.provinceShortName === _this.formInline.provinceName) {
+            format.getCity(v.provinceId).then(function (res) {
+              _this.cityList = res.data.data
+            }, function (error) {
+              console.log(error)
+            })
+          }
+        })
+      }
     }
 }
 </script>

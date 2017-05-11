@@ -13,18 +13,18 @@
     </el-table-column>
     <el-table-column
       align="center"
-      prop="creator"
+      prop="operatorName"
       label="操作人"
       width="180">
     </el-table-column>
     <el-table-column
       align="center"
-      prop="proj_name"
+      prop="moduleName"
       label="归属板块">
     </el-table-column>
     <el-table-column
       align="center"
-      prop="proj_name"
+      prop="projectName"
       label="楼盘名称">
     </el-table-column>
     <el-table-column
@@ -39,7 +39,7 @@
     </el-table-column>
     <el-table-column
       align="center"
-      prop="source"
+      prop="operation"
       label="动作">
     </el-table-column>
     <el-table-column
@@ -70,6 +70,12 @@
 <script>
   import format from '../format.js'
   export default {
+    props: {
+      listDataProp: [Array, Object],
+      originList: [Array, Object],
+      dataProp: [Object],
+      loadingProp: [Boolean, String]
+    },
     data () {
       return {
         tableData: [],
@@ -77,14 +83,16 @@
         listIndex: 10,
         listDataLength: 0,
         listData: [],
-        loading: true
+        loading: true,
+        dataScreen: {}
       }
     },
     beforeCreate () {
       var _this = this
       format.getData(0, 10).then(function (res) {
-        _this.listData = res[0]
-        _this.listDataLength = res[1] - _this.listIndex
+        console.log(res)
+        _this.listData = res.data.data.list
+        _this.listDataLength = res.data.data.total - _this.listIndex
       }, function (error) { console.log('出错了', error) })
     },
     beforeMount: function () {
@@ -100,36 +108,75 @@
     },
     methods: {
       handleClick () {
-        console.log(1)
+        console.log('点击了查看')
       },
       handleSizeChange (val) {
         console.log(`每页 ${val} 条`)
         var _this = this
         this.loading = true
         _this.listIndex = val
-        format.getData(_this.currentPage, _this.listIndex).then(function (res) {
-          _this.listData = res[0]
-          _this.listDataLength = res[1] - _this.listIndex
+        format.getScreenList(_this.currentPage, _this.listIndex, _this.dataScreen).then(function (res) {
+          _this.listData = res.data.data.list
+          _this.listDataLength = res.data.data.total - _this.listIndex
         }, function (error) { console.log('出错了', error) })
+        _this.$emit('handleSizeChange', _this.listIndex)
       },
       handleCurrentChange (val) {
         console.log(`当前页: ${val}`)
         this.currentPage = val
         this.loading = true
         var _this = this
-        format.getData(_this.currentPage, _this.listIndex).then(function (res) {
-          _this.listData = res[0]
-          _this.listDataLength = res[1] - _this.listIndex
+        format.getScreenList(_this.currentPage, _this.listIndex, _this.dataScreen).then(function (res) {
+          _this.listData = res.data.data.list
+          _this.listDataLength = res.data.data.total - _this.listIndex
         }, function (error) { console.log('出错了', error) })
+        _this.$emit('handleCurrentChange', _this.currentPage)
       }
     },
     watch: {
       listData: function (newV) {
+        var _this = this
         this.tableData = newV
-        this.tableData.map(function (v) {
-          v.updateTime = format.smallDateFormat(new Date(parseInt(v.update_time)), 'yyyy-MM-dd')
-        })
+        if (this.tableData) {
+          this.tableData.map(function (v) {
+            v.updateTime = format.smallDateFormat(new Date(parseInt(v.operateTime)), 'yyyy-MM-dd')
+            _this.originList.forEach(o => {
+              if (o.module === v.module) {
+                v.moduleName = o.value
+              }
+            })
+          })
+        }
         this.loading = false
+      },
+      listDataProp: function (newV) {
+        this.listData = newV.list
+        this.listDataLength = newV.total - this.listIndex
+      },
+      'dataProp.provinceName': function (newV) {
+        this.dataScreen.provinceName = newV
+      },
+      'dataProp.operatorName': function (newV) {
+        this.dataScreen.operatorName = newV
+      },
+      'dataProp.cityName': function (newV) {
+        this.dataScreen.cityName = newV
+      },
+      'dataProp.projectName': function (newV) {
+        this.dataScreen.projectName = newV
+      },
+      'dataProp.origin': function (newV) {
+        this.dataScreen.origin = newV
+      },
+      'dataProp.date': function (newV) {
+        this.dataScreen.date = newV
+      },
+      'dataProp.module': function (newV) {
+        this.dataScreen.module = newV
+      },
+      loadingProp: function (newV) {
+        console.log(newV)
+        this.loading = newV
       }
     }
   }

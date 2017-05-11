@@ -27,12 +27,10 @@ format.smallDateFormat = function (date) {
 }
 
 import axios from 'axios'
-
-// 请求数据
+// 请求列表数据
 format.getData = function (currentPage, listIndex) {
   var promise = new Promise(function (resolve, reject) {
-    var url = 'http://house-be-manage.focus-test.cn/project/listProject?params=%7B%22page%22:' + currentPage + ',%22count%22:' + listIndex + '%7D'
-    var res = []
+    var url = 'http://house-be-manage.focus-test.cn/record/list?page=' + currentPage + '&pageSize=' + listIndex
     axios.get(url, {
       headers: {
         'X-Requested-With': 'XMLHttpRequest'
@@ -40,13 +38,67 @@ format.getData = function (currentPage, listIndex) {
       withCredentials: true
     })
       .then(function (response) {
-        res = [response.data.data.content, response.data.data.totalNum]
-        resolve(res) // then中更改了的res，但是存在异步导致拿到数据之前res已经被return
+        resolve(response) // then中更改了的res，但是存在异步导致拿到数据之前res已经被return
       })
       .catch(function (error) {
         console.log(error)
         reject(error)
-        res.error = error
+      })
+  })
+  return promise
+}
+
+// 请求省份数据
+format.getProvince = function () {
+  var promise = new Promise(function (resolve, reject) {
+    var url = 'http://house-sv-base.focus-test.cn/city/province?status=1'
+    axios.get(url)
+      .then(function (res) {
+        resolve(res)
+      })
+      .catch(function (error) {
+        reject(error)
+      })
+  })
+  return promise
+}
+
+// 请求城市数据
+format.getCity = function (provinceId) {
+  var promise = new Promise(function (resolve, reject) {
+    var url = 'http://house-sv-base.focus-test.cn/city/list?provinceId=' + provinceId
+    axios.get(url)
+      .then(function (res) {
+        resolve(res)
+      })
+      .catch(function (error) {
+        reject(error)
+      })
+  })
+  return promise
+}
+
+// 请求具体查询信息的数据
+format.getScreenList = function (currentPage, listIndex, data) {
+  var promise = new Promise(function (resolve, reject) {
+    var url = 'http://house-be-manage.focus-test.cn/record/list?' +
+      (data.cityName ? ('&cityName=' + data.cityName) : '') +
+      (data.provinceName ? ('&provinceName=' + data.provinceName) : '') +
+      '&page=' + currentPage +
+      '&pageSize=' + listIndex +
+      (data.module ? ('&module=' + data.module) : '') +
+      (data.operatorName ? ('&operatorName=' + data.operatorName) : '') +
+      (data.projectName ? ('&projectName=' + data.projectName) : '') +
+      (data.date ? ('&startTime=' + Date.parse(data.date[0])) : '') +
+      (data.date ? ('&endTime=' + Date.parse(data.date[1])) : '')
+    axios.get(url, {
+      withCredentials: true
+    })
+      .then(function (res) {
+        resolve(res)
+      })
+      .catch(function (error) {
+        reject(error)
       })
   })
   return promise
