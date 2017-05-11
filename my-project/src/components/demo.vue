@@ -35,7 +35,7 @@
     </el-form>
     <!-- <demoForm></demoForm> -->
     <!-- <list></list> -->
-    <catchList :handleSizeChange="handleSizeChange" :handleCurrentChange="handleCurrentChange" :listDataProp="listDataProp" :dataProp="formInline" :originList="originList" :loadingProp="loading"></catchList>
+    <catchList @handleSizeChange="handleSizeChange" @handleCurrentChange="handleCurrentChange" :listDataProp="listDataProp" :dataProp="formInline" :originList="originList" :loadingProp="loading"></catchList>
   </div>
 </template>
 
@@ -211,6 +211,7 @@
             _this.formInline.module = v.module
           }
         })
+        console.log('_this.page:' + _this.page)
         format.getScreenList((_this.page - 1), _this.pageSize, _this.formInline).then(function (res) {
           console.log(res)
           _this.listDataProp = res.data.data
@@ -248,11 +249,13 @@
       },
       handleSizeChange: function (info) {
         var _this = this
-        _this.page = info
+        _this.pageSize = info
+        console.log('handleSizeChange:' + info)
       },
       handleCurrentChange: function (info) {
         var _this = this
-        _this.pageSize = info
+        _this.page = info
+        console.log('handleCurrentChange' + info)
       }
     },
     watch: {
