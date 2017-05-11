@@ -82,15 +82,15 @@ format.getCity = function (provinceId) {
 format.getScreenList = function (currentPage, listIndex, data) {
   var promise = new Promise(function (resolve, reject) {
     var url = 'http://house-be-manage.focus-test.cn/record/list?' +
-      (data.cityName ? ('&cityName=' + data.cityName) : '') +
-      (data.provinceName ? ('&provinceName=' + data.provinceName) : '') +
+      ((data.cityName !== '全部') ? (data.cityName ? ('&cityName=' + data.cityName) : '') : '') +
+      ((data.provinceName !== '全部') ? (data.provinceName ? ('&provinceName=' + data.provinceName) : '') : '') +
       '&page=' + currentPage +
       '&pageSize=' + listIndex +
-      (data.module ? ('&module=' + data.module) : '') +
+      ((data.module !== -1) ? (data.module ? ('&module=' + data.module) : '') : '') +
       (data.operatorName ? ('&operatorName=' + data.operatorName) : '') +
       (data.projectName ? ('&projectName=' + data.projectName) : '') +
-      (data.date ? ('&startTime=' + Date.parse(data.date[0])) : '') +
-      (data.date ? ('&endTime=' + Date.parse(data.date[1])) : '')
+      (data.date ? (data.date[0] ? ('&startTime=' + Date.parse(data.date[0])) : '') : '') +
+      (data.date ? (data.date[1] ? ('&endTime=' + Date.parse(data.date[1])) : '') : '')
     axios.get(url, {
       withCredentials: true
     })

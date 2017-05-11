@@ -22,7 +22,7 @@
       <el-form-item label="操作人">
         <el-input v-model="formInline.operatorName" placeholder="请输入操作人"></el-input>
       </el-form-item>
-      <el-form-item label="操作时间" required>
+      <el-form-item label="操作时间">
         <el-col :span="11">
           <el-form-item prop="date1">
             <el-date-picker type="daterange" placeholder="选择日期范围" v-model="formInline.date" style="width: 250px;"></el-date-picker>
@@ -73,35 +73,35 @@
         originList: [
           {
             value: '全部',
-            module: 0
+            module: -1
           },
           {
             value: '楼盘管理',
-            module: 1
+            module: 0
           },
           {
             value: 'spider数据校对',
-            module: 2
+            module: 1
           },
           {
             value: '新建楼盘审核',
-            module: 3
+            module: 2
           },
           {
             value: '楼盘信息审核',
-            module: 4
+            module: 3
           },
           {
             value: 'spider楼盘更新监控',
-            module: 5
+            module: 4
           },
           {
             value: '楼盘点评审核',
-            module: 6
+            module: 5
           },
           {
             value: '点评审核记录',
-            module: 7
+            module: 6
           }
         ]
         // listData: [],
@@ -189,6 +189,9 @@
       //   })
       format.getProvince().then(function (res) {
         _this.provinceList = res.data.data
+        _this.provinceList.unshift({
+          'provinceName': '全部'
+        })
       }, function (error) {
         console.log(error)
       })
@@ -208,7 +211,7 @@
             _this.formInline.module = v.module
           }
         })
-        format.getScreenList(_this.page, _this.pageSize, _this.formInline).then(function (res) {
+        format.getScreenList((_this.page - 1), _this.pageSize, _this.formInline).then(function (res) {
           console.log(res)
           _this.listDataProp = res.data.data
         }, function (error) {
@@ -253,13 +256,20 @@
       }
     },
     watch: {
-      'formInline.provinceName': function () {
+      'formInline.provinceName': function (newV) {
         var _this = this
+        _this.cityList.unshift({
+          'cityName': '全部'
+        })
+        _this.formInline.cityName = ''
         _this.provinceList.forEach(v => {
           console.log(v.provinceShortName)
           if (v.provinceShortName === _this.formInline.provinceName) {
             format.getCity(v.provinceId).then(function (res) {
               _this.cityList = res.data.data
+              _this.cityList.unshift({
+                'cityName': '全部'
+              })
             }, function (error) {
               console.log(error)
             })

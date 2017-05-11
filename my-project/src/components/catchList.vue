@@ -92,7 +92,7 @@
       format.getData(0, 10).then(function (res) {
         console.log(res)
         _this.listData = res.data.data.list
-        _this.listDataLength = res.data.data.total - _this.listIndex
+        _this.listDataLength = res.data.data.total
       }, function (error) { console.log('出错了', error) })
     },
     beforeMount: function () {
@@ -115,9 +115,10 @@
         var _this = this
         this.loading = true
         _this.listIndex = val
-        format.getScreenList(_this.currentPage, _this.listIndex, _this.dataScreen).then(function (res) {
+        format.getScreenList((_this.currentPage - 1), _this.listIndex, _this.dataScreen).then(function (res) {
           _this.listData = res.data.data.list
-          _this.listDataLength = res.data.data.total - _this.listIndex
+          _this.listDataLength = res.data.data.total
+          // _this.listDataLength = res.data.data.total - _this.listIndex
         }, function (error) { console.log('出错了', error) })
         _this.$emit('handleSizeChange', _this.listIndex)
       },
@@ -126,9 +127,10 @@
         this.currentPage = val
         this.loading = true
         var _this = this
-        format.getScreenList(_this.currentPage, _this.listIndex, _this.dataScreen).then(function (res) {
+        format.getScreenList((_this.currentPage - 1), _this.listIndex, _this.dataScreen).then(function (res) {
           _this.listData = res.data.data.list
-          _this.listDataLength = res.data.data.total - _this.listIndex
+          _this.listDataLength = res.data.data.total
+          // _this.listDataLength = res.data.data.total - _this.listIndex
         }, function (error) { console.log('出错了', error) })
         _this.$emit('handleCurrentChange', _this.currentPage)
       }
@@ -151,7 +153,8 @@
       },
       listDataProp: function (newV) {
         this.listData = newV.list
-        this.listDataLength = newV.total - this.listIndex
+        this.listDataLength = newV.total
+        // this.listDataLength = newV.total - this.listIndex
       },
       'dataProp.provinceName': function (newV) {
         this.dataScreen.provinceName = newV
