@@ -42,7 +42,7 @@
  
 <script>
   import list from './list'
-  import catchList from './catchList'
+  import catchList from './catch-list'
   import format from '../format.js'
   import demoForm from './demo-form'
   export default {
@@ -171,22 +171,6 @@
     },
     beforeCreate () {
       var _this = this
-      // this.$http.get('http://house-be-manage.focus-test.cn/project/listProject?params=%7B%22page%22:0,%22count%22:10%7D', {
-      //   headers: {
-      //     'X-Requested-With': 'XMLHttpRequest'
-      //   },
-      //   // credentials: 'include',
-      //   withCredentials: true
-      // })
-      //   .then(function (response) {
-      //     // console.log(response)
-      //     // console.log(response.data)
-      //     // console.log(response.data.data.content)
-      //     _this.listData = response.data.data.content
-      //   })
-      //   .catch(function (error) {
-      //     console.log(error)
-      //   })
       format.getProvince().then(function (res) {
         _this.provinceList = res.data.data
         _this.provinceList.unshift({
@@ -211,7 +195,6 @@
             _this.formInline.module = v.module
           }
         })
-        console.log('_this.page:' + _this.page)
         format.getScreenList((_this.page - 1), _this.pageSize, _this.formInline).then(function (res) {
           console.log(res)
           _this.listDataProp = res.data.data

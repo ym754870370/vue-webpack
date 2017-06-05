@@ -113,7 +113,7 @@
       handleSizeChange (val) {
         console.log(`每页 ${val} 条`)
         var _this = this
-        this.loading = true
+        _this.loading = true
         _this.listIndex = val
         format.getScreenList((_this.currentPage - 1), _this.listIndex, _this.dataScreen).then(function (res) {
           _this.listData = res.data.data.list
