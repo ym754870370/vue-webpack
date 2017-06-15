@@ -39,7 +39,7 @@
   </div>
 </template>
 
- 
+
 <script>
   import list from './list'
   import catchList from './catch-list'
@@ -179,12 +179,20 @@
       }, function (error) {
         console.log(error)
       })
+      console.log('child beforeCreate')
+    },
+    created () {
+      console.log('child created')
     },
     beforeMount () {
       var _this = this
       setTimeout(function () {
         _this.dateOptions = _this.listData
       }, 3000)
+      console.log('child beforeMount')
+    },
+    mounted () {
+      console.log('child mounted')
     },
     methods: {
       onSubmit () {
