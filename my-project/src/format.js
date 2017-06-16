@@ -105,4 +105,3 @@ format.getScreenList = function (currentPage, listIndex, data) {
 }
 
 export default format
-
