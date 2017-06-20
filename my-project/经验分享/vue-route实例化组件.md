@@ -50,6 +50,7 @@ const Baz = r => require.ensure([], () => r(require('./Baz.vue')), 'group-foo')
 ### router的一些方法
 
 #### router.push
+使用 router.push 方法。这个方法会向 history 栈添加一个新的记录，所以，当用户点击浏览器后退按钮时，则回到之前的 URL.
 ```javascript
 //声明式
 <router-link :to="...">
@@ -71,7 +72,7 @@ router.push({ path: 'register', query: { plan: 'private' }})
 ```
 
 #### router.replace
-
+跟 router.push 很像，唯一的不同就是，它不会向 history 添加新记录，而是跟它的方法名一样 —— 替换掉当前的 history 记录。
 ```javascript
 //声明式
 <router-link :to="..." replace>
@@ -98,3 +99,15 @@ router.go(-100)
 router.go(100)
 
 ```
+
+### 钩子函数
+#### router.beforeEach(to, from, next)
+to: 即将要进入的路由
+from: 当前导航正要离开的路由
+next: 1. next():执行管道中的另一个钩子
+      2. next(false): 返回from的路由
+      3. next({path: "/"})
+         next("/"): 中断当前导航，进入下一个新的导航
+#### router.afterEach(router => {})
+
+#### 其它可直接阅读vue-router官方文档
