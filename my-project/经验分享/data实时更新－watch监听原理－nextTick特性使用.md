@@ -90,8 +90,6 @@ Vue.nextTick(function () {
 })
 
 
-
-
 //组件内部使用nextTick
 Vue.component('example', {
   template: '<span>{{ message }}</span>',
@@ -114,4 +112,4 @@ Vue.component('example', {
 ```
 
 
-AST抽象语法树：源代码语法所对应的树状结构，构建语法树的形式将源代码的语句映射到树中的每一个节点上。
+#### AST抽象语法树：源代码语法所对应的树状结构，构建语法树的形式将源代码的语句映射到树中的每一个节点上。
