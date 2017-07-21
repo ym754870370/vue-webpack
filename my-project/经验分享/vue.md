@@ -98,7 +98,7 @@ sync函数：会将所有修改的块放到队列中，然后就直接返回，�
 
    react在vue整套黑盒前 通过设置state, 然后手动调用函数 setState方法 将 newState存入pending队列， 接着调用enqueueUpdate 去进行更新，然后进行自动绑定
 
-   angular
+   angular中双向数据绑定的实现原理是对DOM或xhr事件做了定制，在里面触发digest（脏检查）流程，去检查所有的watcher，从而更新数据。
 
 2. 数据流和绑定方面
 两个都是单向数据流，全局性数据使用单向，好跟踪，但是vue具备局部区域的双向数据绑定，操作更加的简单。
